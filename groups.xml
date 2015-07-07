@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+	<bean name="oriGroupConfigGeneral_TEFULR" class="org.orioai.workflow.services.acls.OriGroupConfig">
+		<property name="groupsMap">
+			<description>
+				groupsMap defines a Map where
+				* keys are groups names
+				* values are ldap, virtual or shibboleth groups used
+			</description>
+			<map>
+				<entry key="TEF-ULR_DREDE">
+					<value><![CDATA[ldap:ori-oai_drede]]></value>
+				</entry>
+
+				<entry key="TEF-ULR_admins">
+					<value><![CDATA[ldap:ori-oai_admins]]></value>
+				</entry>
+
+				<entry key="TEF-ULR_BU">
+					<value><![CDATA[ldap:ori-oai_bu]]></value>
+				</entry>
+
+				<entry key="TEF-ULR_Validateur">
+					<value><![CDATA[ldap:ori-oai-validateur]]></value>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

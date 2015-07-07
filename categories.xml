@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+
+	<!-- categories -->
+	<bean class="org.orioai.workflow.beans.RoleStepCategory">
+		<property name="id" value="TEFULR_DREDE_theses_creation" />
+		<property name="index" value="1" />
+		<property name="workflowNameStepIds">
+			<map>
+				<entry key ="tef_ulr">
+					<list>
+						<value>1</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+		<property name="roleMaskList">
+			<list>
+				<value>TEFULR_DREDE</value>
+			</list>
+		</property>
+		<property name="description" value="mes fiches en cours de saisie DREDE"></property>
+	</bean>
+
+	
+	<!-- L'utilisateur de la DREDE verra les workflows à l'état 3 décrit comme "fiches signalées à la BU" -->
+	<bean class="org.orioai.workflow.beans.RoleStepCategory">
+		<property name="id" value="TEFULR_DREDE_theses_signalee" />
+		<property name="index" value="2" />
+		<property name="workflowNameStepIds">
+			<map>
+				<entry key="tef_ulr">
+					<list>
+						<value>3</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+		<property name="roleMaskList">
+			<list>
+				<value>TEFULR_BU</value>
+			</list>
+		</property>
+		<property name="description" value="fiches signalées à la BU"></property>
+	</bean>
+
+	
+	<!-- L'utilisateur de la BU verra le workflow à l'état 3 décrit comme "fiches en cours de saisie" -->
+	<bean class="org.orioai.workflow.beans.RoleStepCategory">
+		<property name="id" value="TEFULR_BU_saisie" />
+		<property name="index" value="3" />
+		<property name="workflowNameStepIds">
+			<map>
+				<entry key="tef_ulr">
+					<list>
+						<value>3</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+		<property name="roleMaskList">
+			<list>
+				<value>TEFULR_DREDE</value>
+			</list>
+		</property>
+		<property name="description" value="mes fiches en cours de saisie BU"></property>
+	</bean>
+
+
+	<!-- Les utilisateurs BU et DREDE verront le workflow à l'état 5 décrit comme "fiches en attente de validation" -->
+	<bean class="org.orioai.workflow.beans.RoleStepCategory">
+		<property name="id" value="TEFULR_DREDE_BU_attente_validation" />
+		<property name="index" value="4" />
+		<property name="workflowNameStepIds">
+			<map>
+				<entry key="tef_ulr">
+					<list>
+						<value>5</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+		<property name="roleMaskList">
+			<list>
+				<value>TEFULR_BU</value>
+				<value>TEFULR_DREDE</value>
+			</list>
+		</property>
+		<property name="description" value="fiches en attente de validation"></property>
+	</bean>
+
+	
+	<!-- L'utilisateur de la DREDE verra le workflow à l'état 7 décrit comme "fiche signalee et indexee" -->
+	<bean class="org.orioai.workflow.beans.RoleStepCategory">
+		<property name="id"	value="TEFULR_DREDE_BU_theses_validee_indexee" />
+		<property name="index" value="5" />
+		<property name="workflowNameStepIds">
+			<map>
+				<entry key="tef_ulr">
+					<list>
+						<value>7</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+		<property name="roleMaskList">
+			<list>
+				<value>TEFULR_DREDE</value>
+				<value>TEFULR_BU</value>
+			</list>
+		</property>
+		<property name="description" value="fiches validées et indexées"></property>
+	</bean>
+
+
+
+	<!-- L'utilisateur de la BU verra le workflow à l'état 9 décrit comme "fiches desindexees et en cours de revision" -->
+	<bean class="org.orioai.workflow.beans.RoleStepCategory">
+		<property name="id" value="TEFULR_DREDE_BU_revision" />
+		<property name="index" value="6" />
+		<property name="workflowNameStepIds">
+			<map>
+				<entry key="tef_ulr">
+					<list>
+						<value>9</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+		<property name="roleMaskList">
+			<list>
+				<value>TEFULR_DREDE</value>
+				<value>TEFULR_BU</value>
+			</list>
+		</property>
+		<property name="description" value="fiches désindexées : en cours de révision"></property>
+	</bean>
+
+
+	<!-- L'administrateur verra les workflows à l'état 1, 3, 5, 7 et 9 décrit comme "ensemble des fiches" -->
+	<bean class="org.orioai.workflow.beans.RoleStepCategory">
+		<property name="id"	value="theses_TEFULR_all" />
+		<property name="index" value="7" />
+		<property name="workflowNameStepIds">
+			<map>
+				<entry key="tef_ulr">
+					<list>
+						<value>1</value>
+						<value>3</value>
+						<value>5</value>
+						<value>7</value>
+						<value>9</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+		<property name="roleMaskList">
+			<list>
+				<value>TEFULR_ADMINISTRATOR</value>
+			</list>
+		</property>
+		<property name="description" value="ensemble des fiches (vue administrateur)"></property>
+	</bean>
+</beans>

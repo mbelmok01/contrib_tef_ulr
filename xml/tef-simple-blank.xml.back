@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets  xmlns:tef="http://www.abes.fr/abes/documents/tef" xmlns:mets="http://www.loc.gov/METS/"
+	xmlns:metsRights="http://cosimo.stanford.edu/sdr/metsrights/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"
+	xmlns:mads="http://www.loc.gov/mads/" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xml="http://www.w3.org/XML/1998/namespace">
+	<!-- xsi:schemaLocation="http://www.abes.fr/abes/documents/tef http://www.abes.fr/abes/documents/tef/recommandation/tef_schemas.xsd"-->
+
+	<mets:metsHdr ID="" RECORDSTATUS="complet">
+		<mets:agent ROLE="CREATOR">
+			<mets:name>[WORKFLOW_TEF_CREATOR_NAME]</mets:name>
+		</mets:agent>
+	</mets:metsHdr>
+
+	<mets:dmdSec ID="desc_expr" CREATED="2002-12-07T12:20:46">
+		<mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="tef_desc_these">
+			<mets:xmlData>
+				<tef:thesisRecord>
+					<dc:title xml:lang="fr"/>
+					<dc:subject xml:lang="fr"/>
+					<dcterms:abstract xml:lang="fr"/>
+					<dcterms:abstract xml:lang="en"/>
+					<dc:type.controlle xsi:type="dcterms.DCMIType">texte</dc:type.controlle>
+					<dc:type>Electronic Thesis or Dissertation</dc:type>
+					<dc:language xsi:type="dcterms:RFC3066">fr</dc:language>
+				</tef:thesisRecord>
+			</mets:xmlData>
+		</mets:mdWrap>
+	</mets:dmdSec>
+	
+	<mets:dmdSec ID="desc_edition">
+		<mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="tef_desc_edition">
+			<mets:xmlData>
+				<tef:edition>
+					<dcterms:medium xsi:type="dcterms:IMT"></dcterms:medium>
+					<dcterms:extent></dcterms:extent>
+					<dc:identifier xsi:type="dcterms:URI"></dc:identifier>
+				</tef:edition>
+			</mets:xmlData>
+		</mets:mdWrap>
+	</mets:dmdSec>
+
+	<mets:amdSec>
+		<mets:techMD ID="admin_expr">
+			<mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="tef_admin_these">
+				<mets:xmlData>
+					<tef:thesisAdmin>
+						<dc:identifier xsi:type="tef.NNT"/>
+						<dc:identifier xsi:type="tef.nationalThesisPID"/>
+						<dcterms:dateAccepted xsi:type="dcterms:W3CDTF"/>
+						<tef:thesis.degree>
+							<tef:thesis.degree.discipline xml:lang="fr"/>
+							<tef:thesis.degree.grantor>
+								<tef:nom>[WORKFLOW_TEF_ETAB_NAME]</tef:nom>
+								<tef:autoriteInterne>thesis.degree.grantor_1</tef:autoriteInterne>
+								<tef:autoriteExterne autoriteSource="Sudoc">[WORKFLOW_TEF_ETAB_ID]</tef:autoriteExterne>
+							</tef:thesis.degree.grantor>
+							<tef:thesis.degree.level>Doctorat</tef:thesis.degree.level>
+						</tef:thesis.degree>
+						<tef:theseSurTravaux>non</tef:theseSurTravaux>
+						<tef:avisJury>oui</tef:avisJury>
+						<tef:oaiSetSpec/>
+						<tef:MADSAuthority authorityID="thesis.degree.grantor_1" type="corporate">
+							<tef:personMADS>
+								<mads:namePart>[WORKFLOW_TEF_ETAB_NAME]</mads:namePart>
+								<mads:description>[WORKFLOW_TEF_ETAB_DESC]</mads:description>
+							</tef:personMADS>
+						</tef:MADSAuthority>
+					</tef:thesisAdmin>
+				</mets:xmlData>
+			</mets:mdWrap>
+		</mets:techMD>
+		
+		<mets:techMD ID="file_1">
+			<mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="tef_tech_fichier">
+				<mets:xmlData>
+					<tef:meta_fichier>
+						<tef:encodage></tef:encodage>
+						<tef:formatFichier></tef:formatFichier>
+						<tef:taille></tef:taille>
+					</tef:meta_fichier>
+				</mets:xmlData>
+			</mets:mdWrap>
+		</mets:techMD>
+		
+		<mets:rightsMD ID="dr_expr_thesard">
+			<mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="tef_droits_auteur_these">
+				<mets:xmlData>
+					<metsRights:RightsDeclarationMD>
+						<metsRights:Context CONTEXTCLASS="GENERAL PUBLIC">
+							<metsRights:Permissions DISCOVER="true" COPY="true" DISPLAY="true" DUPLICATE="true" PRINT="true" MODIFY="false" DELETE="false"/>
+						</metsRights:Context>
+					</metsRights:RightsDeclarationMD>
+				</mets:xmlData>
+			</mets:mdWrap>
+		</mets:rightsMD>
+		
+		<mets:rightsMD ID="dr_expr_univ">
+			<mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="tef_droits_etablissement_these">
+				<mets:xmlData>
+					<metsRights:RightsDeclarationMD>
+						<metsRights:Context CONTEXTCLASS="GENERAL PUBLIC">
+							<metsRights:Permissions DISCOVER="true" COPY="true" DISPLAY="true" DUPLICATE="true" PRINT="true" MODIFY="false" DELETE="false"/>
+						</metsRights:Context>
+					</metsRights:RightsDeclarationMD>
+				</mets:xmlData>
+			</mets:mdWrap>
+		</mets:rightsMD>
+		
+		<mets:rightsMD ID="dr_version">
+			<mets:mdWrap MDTYPE="OTHER" OTHERMDTYPE="tef_droits_version">
+				<mets:xmlData>
+					<metsRights:RightsDeclarationMD>
+						<metsRights:Context CONTEXTCLASS="GENERAL PUBLIC">
+							<metsRights:Permissions DISCOVER="true" COPY="true" DISPLAY="true" DUPLICATE="true" PRINT="true" MODIFY="false" DELETE="false"/>
+						</metsRights:Context>
+					</metsRights:RightsDeclarationMD>
+				</mets:xmlData>
+			</mets:mdWrap>
+		</mets:rightsMD>
+	</mets:amdSec>
+	
+	<mets:fileSec>
+		<mets:fileGrp USE="archive" ID="FGrID1">
+			<mets:file ID="FID1" MIMETYPE="" ADMID="file_1" USE="maitre">
+				<mets:FLocat LOCTYPE="URL" xlink:href=""/>
+			</mets:file>
+		</mets:fileGrp>
+	</mets:fileSec>
+
+	<mets:structMap TYPE="logical">
+		<mets:div TYPE="THESE" DMDID="desc_expr" ADMID="dr_expr_thesard dr_expr_univ admin_expr" CONTENTIDS="/oeuvre">
+			<mets:div TYPE="VERSION_COMPLETE" ADMID="dr_version" CONTENTIDS="/version">
+				<mets:div TYPE="EDITION" DMDID="desc_edition" CONTENTIDS="/edition">
+					<mets:fptr FILEID="FGrID1"/>
+				</mets:div>
+			</mets:div>
+		</mets:div>
+	</mets:structMap>
+</mets:mets>

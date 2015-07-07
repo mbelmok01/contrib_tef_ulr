@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.6//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+	
+
+
+
+	<!-- Un membre de la DREDE commence le referencement : donc on lui donne les droits de creer/supprimer/etiter une fiche -->
+	<initial-actions>
+		<action id="100" name="Start Workflow">
+			<restrict-to>
+				<conditions type="AND">
+					<condition type="spring">
+						<arg name="bean.name">hasRole</arg>
+						<arg name="mask">TEFULR_DREDE</arg>
+					</condition>
+				</conditions>
+			</restrict-to>
+			<results>
+				<unconditional-result old-status="Finished" status="Underway" step="1" />
+			</results>
+			<post-functions>
+				<function type="spring">
+					<arg name="bean.name">addPermission</arg>
+					<arg name="mask">TEFULR_CREATE TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
+					<arg name="recipient">TEFULR_DREDE</arg>
+				</function>
+				<function type="spring">
+					<arg name="bean.name">setInstanceIdentity</arg>
+					<arg name="xpathMetadataIdentity">/mets:mets/mets:metsHdr/@ID</arg>
+				</function>
+				<function type="spring">
+					<arg name="bean.name">setInstanceIdentity</arg>
+					<arg name="xpathMetadataIdentity">/mets:mets/mets:structMap/mets:div/@CONTENTIDS</arg>
+					<arg name="complementInstance">/oeuvre</arg>
+				</function>
+				<function type="spring">
+					<arg name="bean.name">setInstanceIdentity</arg>
+					<arg name="xpathMetadataIdentity">/mets:mets/mets:structMap/mets:div/mets:div/@CONTENTIDS</arg>
+					<arg name="complementInstance">/oeuvre/version</arg>
+				</function>
+				<function type="spring">
+					<arg name="bean.name">setInstanceIdentity</arg>
+					<arg name="xpathMetadataIdentity">/mets:mets/mets:structMap/mets:div/mets:div/mets:div/@CONTENTIDS</arg>
+					<arg name="complementInstance">/oeuvre/version/edition</arg>
+				</function>
+				<function type="spring">
+					<arg name="bean.name">xslTransform</arg>
+					<arg name="xslPath">properties/workflows/contrib_tef_ulr/xsl/tefSetDateCreate.xsl</arg>
+				</function>		
+				<function type="spring">
+					<arg name="bean.name">xslTransform</arg>
+					<arg name="xslPath">properties/workflows/contrib_tef_ulr/xsl/tefModifyInstanceID.xsl</arg>
+				</function>
+			</post-functions>
+		</action>
+	</initial-actions>
+	
+	
+
+	<!-- Le membre de la DREDE peut signagler une fiche a la BU -->
+	<!-- une fois que cette action est faite, on donne les droits d'edition a la BU -->
+	<steps>	
+		<step id="1" name="tef_ulr.enCoursSaisiDREDE">
+			<actions>
+				<action id="2" name="tef_ulr.SignalerBU">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="spring">
+								<arg name="bean.name">hasRole</arg>
+								<arg name="mask">TEFULR_DREDE</arg>			
+							</condition>
+							<condition type="spring">
+								<arg name="bean.name">verifySchematron</arg>
+								<arg name="schematronFile">properties/workflows/contrib_tef_ulr/sch/tef-drede-i18n.sch</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result status="Underway" old-status="Finished" step="3" />
+					</results>
+					<post-functions>
+						<function type="spring">
+							<arg name="bean.name">deletePermission</arg>
+							<arg name="mask">TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
+							<arg name="recipient">TEFULR_DREDE</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">addPermission</arg>
+							<arg name="mask">USE_GLOBAL_TEFULR_FORM</arg>
+							<arg name="recipient">TEFULR_BU</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">xslTransform</arg>
+							<arg name="xslPath">properties/workflows/contrib_tef_ulr/xsl/tefSetDateModify.xsl</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">saveXmlHistory</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">sendEmail</arg>
+							<arg name="rollbackIfFailed">true</arg>
+							<arg name="smtpToAddress">mbelmo01@univ-lr.fr</arg>
+							<arg name="subject">Thèse à compléter</arg>
+							<arg name="attachNotice">true</arg>
+							<arg name="message">
+								<![CDATA[
+								{0} vient de placer renseigner une fiche de métadonnées.
+
+								---------------------------------------------
+								Voici ses observations.
+								{2}
+								
+								-------------------------------------------------
+								Veuillez vous connecter à orioaidev.univ-lr.fr/ori-oai-workflow afin de compléter la fiche.
+								-------------------------------------------------
+								]]></arg>
+						</function>
+					</post-functions>
+				</action>
+			</actions>
+		</step>
+		
+		
+		<!-- Un membre de la BU peut editer une fiche -->
+		<!-- il peut signaler la fiche au validateur -->
+	
+		<step id="3" name="tef_ulr.enCoursSaisiBU">
+			<actions>
+				<action id="4" name="tef_ulr.SignalerValidateur">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="spring">
+								<arg name="bean.name">hasRole</arg>
+								<arg name="mask">TEFULR_BU</arg>
+							</condition>
+							<condition type="spring">
+								<arg name="bean.name">verifySchematron</arg>
+								<arg name="schematronFile">properties/workflows/contrib_tef_ulr/sch/tef-moderateur-i18n.sch</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result old-status="Finished" status="Underway" step="5" />
+					</results>
+					<post-functions>
+						<function type="spring">
+							<arg name="bean.name">saveXmlHistory</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">deletePermission</arg>
+							<arg name="mask">USE_GLOBAL_TEFULR_FORM</arg>
+							<arg name="recipient">TEFULR_BU</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">sendEmail</arg>
+							<arg name="rollbackIfFailed">true</arg>
+							<arg name="smtpToAddress">mbelmo01@univ-lr.fr</arg>
+							<arg name="subject">Thèse à valider</arg>
+							<arg name="attachNotice">true</arg>
+							<arg name="message"><![CDATA[
+
+								{0} vient de vous soumettre une fiche de métadonnées afin que vous la validiez : {1}
+
+								---------------------------------------------
+								Voici ses observations.
+								{2}
+								
+								-------------------------------------------------
+								Veuillez vous connecter à orioaidev.univ-lr.fr/ori-oai-workflow afin de valider  invalider celle-ci.
+								-------------------------------------------------
+								]]></arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">xslTransform</arg>
+							<arg name="xslPath">properties/workflows/contrib_tef_ulr/xsl/tefSetDateModify.xsl</arg>
+						</function>
+					</post-functions>
+				</action>
+			</actions>
+		</step>
+		
+
+		<!-- le membre validateur peut voir la fiche -->
+		<!-- il a la possibilite de valider une fiche => referecement + indexation -->
+		<!-- il a la possibilite de rejeter une fiche => on repart a l'etape 1 -->
+		<step id="5" name="tef_ulr.enCoursValidation">
+			<actions>
+				<action id="6" name="tef_ulr.Valider">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="spring">
+								<arg name="bean.name">hasRole</arg>
+								<arg name="mask">TEFULR_VALIDATEUR</arg>
+							</condition>
+							<condition type="spring">
+								<arg name="bean.name">verifySchematron</arg>
+								<arg name="schematronFile">properties/workflows/contrib_tef_ulr/sch/tef-abes-i18n.sch</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result status="Underway" old-status="Finished" step="7" />
+					</results>
+					<post-functions>
+						<function type="spring">
+							<arg name="bean.name">saveOrUpdateIndex</arg>
+							<arg name="idOriIndexing">indexingServicePublic</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">xslTransform</arg>
+							<arg name="xslPath">properties/workflows/contrib_tef_ulr/xsl/tefAddSchema.xsl</arg>
+						</function>
+						
+						<!-- On depose sur HAL -->
+						
+						<function type="spring">
+							<arg name="bean.name">invokeWSOperation</arg>
+							<arg name="wsId">hal</arg>
+							<arg name="wsMethodId">upload</arg>
+						</function>
+
+						<!-- On depose sur STAR -->
+						<!--
+						<function type="spring">
+							<arg name="bean.name">invokeWSOperation</arg>
+							<arg name="wsId">star</arg>
+							<arg name="wsMethodId">upload</arg>
+							</function>
+						-->
+
+						<!-- On envoie un email pour prevenir que la these a ete validee-->
+						<!-- <function type="spring">
+							<arg name="bean.name">sendEmail</arg>
+							<arg name="rollbackIfFailed">true</arg>
+							<arg name="smtpToAddress">ori-oai_drede@univ-lr.fr</arg>
+							<arg name="subject">Thèse validée</arg>
+							<arg name="attachNotice">true</arg>
+							<arg name="message"><![CDATA[{0} a indexé localement et envoyé à l'ABES la thèse suivante :{1}]]></arg>
+						</function> -->
+						
+
+						<!-- <function type="spring">
+							<arg name="bean.name">sendEmail</arg>
+							<arg name="rollbackIfFailed">true</arg>
+							<arg name="smtpToAddress">[WORKFLOW_TEF_EMAIL_STAR]</arg>
+							<arg name="subject">[WORKFLOW_TEF_ETAB_ID_STAR]</arg>
+							<arg name="attachNotice">true</arg>
+							<arg name="xpathTitle">//mets:amdSec/mets:techMD/mets:mdWrap[@OTHERMDTYPE='tef_admin_these']/mets:xmlData/tef:thesisAdmin/dc:identifier</arg>
+							<arg name="message"></arg>
+						</function> -->
+					</post-functions>
+				</action>
+				
+
+				<action id="11" name="tef_ulr.Reject">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="spring">
+								<arg name="bean.name">hasRole</arg>
+								<arg name="mask">TEFULR_VALIDATEUR</arg>
+							</condition>
+							<condition type="spring">
+								<arg name="bean.name">verifySchematron</arg>
+								<arg name="schematronFile">properties/workflows/contrib_tef_ulr/sch/tef-abes-i18n.sch</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+
+					<results>
+						<unconditional-result status="Underway" old-status="Finished" step="1" />
+					</results>
+
+
+					<post-functions>
+						<function type="spring">
+							<arg name="bean.name">xslTransform</arg>
+							<arg name="xslPath">properties/workflows/contrib_tef_ulr/xsl/tefAddSchema.xsl</arg>
+						</function>
+
+						<function type="spring">
+							<arg name="bean.name">addPermission</arg>
+							<arg name="mask">TEFULR_CREATE TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
+							<arg name="recipient">TEFULR_DREDE</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">sendEmail</arg>
+							<arg name="rollbackIfFailed">true</arg>
+							<arg name="smtpToAddress">belmo01@univ-lr.fr</arg>
+							<arg name="subject">Thèse rejetée</arg>
+							<arg name="attachNotice">true</arg>
+							<arg name="message"><![CDATA[
+								{0} a rejeté la thèse suivante : {1}
+
+								---------------------------------------------
+								Voici ses observations {2}
+
+
+								]]>
+							</arg>
+						</function>
+					</post-functions>
+				</action>
+
+
+			</actions>
+		</step>
+
+
+		<!-- si une fiche est validee, il est possible de la desindexer -->
+		<!-- on redonne le droit d'edition aux membres de la BU et de la DREDE -->
+		<step id="7" name="tef_ulr.Validee">
+			<actions>
+				<action id="8" name="tef_ulr.Desindexer">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="spring">
+								<arg name="bean.name">hasRole</arg>
+								<arg name="mask">TEFULR_VALIDATEUR</arg>
+							</condition>
+							<condition type="spring">
+								<arg name="bean.name">verifySchematron</arg>
+								<arg name="schematronFile">/properties/workflows/contrib_tef_ulr/sch/tef-abes-i18n.sch</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result status="Underway" old-status="Finished" step="9" />
+					</results>
+					<post-functions>
+						<function type="spring">
+							<arg name="bean.name">deleteIndex</arg>
+							<arg name="idOriIndexing">indexingServicePublic</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">xslTransform</arg>
+							<arg name="xslPath">properties/workflows/contrib_tef_ulr/xsl/tefAddSchema.xsl</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">addPermission</arg>
+							<arg name="mask">TEFULR_CREATE TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
+							<arg name="recipient">TEFULR_BU TEFULR_DREDE</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">sendEmail</arg>
+							<arg name="rollbackIfFailed">true</arg>
+							<arg name="smtpToAddress">mbelmo01@univ-lr.fr</arg>
+							<arg name="subject">Thèse desindexée</arg>
+							<arg name="attachNotice">true</arg>
+							<arg name="message"><![CDATA[
+								{0} a desindexé la thèse suivante : {1}
+
+								---------------------------------------------
+
+								Voici les observations faites : {2}]]></arg>
+						</function>
+					</post-functions>
+				</action>
+			</actions>
+		</step>
+
+
+		<!-- si une fiche a ete desindexee (entre temps corrigee) il faut de nouveau la reindexer et supprimer les droits d'edition -->
+
+		<step id="9" name="tef_ulr.Desindexee">
+			<actions>
+				<action id="10" name="tef_ulr.Reindexer">
+					<restrict-to>
+						<conditions type="AND">
+							<condition type="spring">
+								<arg name="bean.name">hasRole</arg>
+								<arg name="mask">TEFULR_VALIDATEUR</arg>
+							</condition>
+							<condition type="spring">
+								<arg name="bean.name">verifySchematron</arg>
+								<arg name="schematronFile">/properties/workflows/contrib_tef_ulr/sch/tef-moderateur-i18n.sch</arg>
+							</condition>
+						</conditions>
+					</restrict-to>
+					<results>
+						<unconditional-result status="Underway" old-status="Finished" step="7" />
+					</results>
+					<post-functions>
+						<function type="spring">
+							<arg name="bean.name">saveOrUpdateIndex</arg>
+							<arg name="idOriIndexing">indexingServicePublic</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">xslTransform</arg>
+							<arg name="xslPath">properties/workflows/contrib_tef_ulr/xsl/tefAddSchema.xsl</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">deletePermission</arg>
+							<arg name="mask">TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
+							<arg name="recipient">TEFULR_BU TEFULR_DREDE</arg>
+						</function>
+						<function type="spring">
+							<arg name="bean.name">sendEmail</arg>
+							<arg name="rollbackIfFailed">true</arg>
+							<arg name="smtpToAddress">mbelmo01@univ-lr.fr</arg>
+							<arg name="subject">Thèse reindexée</arg>
+							<arg name="attachNotice">true</arg>
+							<arg name="message"><![CDATA[
+								{0} a reindexé la thèse suivante : {1}
+
+								-------------------------------------------------
+								Voici les observations faites : {2}]]>
+							</arg>
+						</function>
+					</post-functions>
+				</action>
+			</actions>
+		</step>
+	</steps>
+</workflow>
