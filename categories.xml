@@ -26,7 +26,7 @@
 	</bean>
 
 	
-	<!-- L'utilisateur de la DREDE verra les workflows à l'état 3 décrit comme "fiches signalées à la BU" -->
+	<!-- L'utilisateur de la DREDE verra les workflows à l'état 2 décrit comme "fiches signalées à la BU" -->
 	<bean class="org.orioai.workflow.beans.RoleStepCategory">
 		<property name="id" value="TEFULR_DREDE_theses_signalee" />
 		<property name="index" value="2" />
@@ -48,7 +48,7 @@
 	</bean>
 
 	
-	<!-- L'utilisateur de la BU verra le workflow à l'état 3 décrit comme "fiches en cours de saisie" -->	
+	<!-- L'utilisateur de la BU verra le workflow à l'état 2 décrit comme "fiches en cours de saisie" -->	
 	<bean class="org.orioai.workflow.beans.RoleStepCategory">
 		<property name="id" value="TEFULR_BU_theses_saisie" />
 		<property name="index" value="3" />
@@ -72,7 +72,7 @@
 
 
 
-	<!-- Les utilisateurs BU et DREDE verront le workflow à l'état 5 décrit comme "fiches en attente de validation" -->
+	<!-- Les utilisateurs BU et DREDE verront le workflow à l'état 3 décrit comme "fiches en attente de validation" -->
 	<bean class="org.orioai.workflow.beans.RoleStepCategory">
 		<property name="id" value="TEFULR_DREDE_BU_attente_validation" />
 		<property name="index" value="4" />
@@ -95,7 +95,7 @@
 	</bean>
 
 	
-	<!-- L'utilisateur de la DREDE verra le workflow à l'état 7 décrit comme "fiche signalee et indexee" -->
+	<!-- Les utilisateurs de la DREDE et la BU verront le workflow à l'état 4 décrit comme "fiche signalee et indexee" -->
 	<bean class="org.orioai.workflow.beans.RoleStepCategory">
 		<property name="id"	value="TEFULR_DREDE_BU_theses_validee_indexee" />
 		<property name="index" value="5" />
@@ -103,7 +103,7 @@
 			<map>
 				<entry key="tef_ulr">
 					<list>
-						<value>7</value>
+						<value>4</value>
 					</list>
 				</entry>
 			</map>
@@ -119,7 +119,7 @@
 
 
 
-	<!-- L'utilisateur de la BU verra le workflow à l'état 9 décrit comme "fiches desindexees et en cours de revision" -->
+	<!-- L'utilisateur de la BU verra le workflow à l'état 5 décrit comme "fiches desindexees et en cours de revision" -->
 	<bean class="org.orioai.workflow.beans.RoleStepCategory">
 		<property name="id" value="TEFULR_DREDE_BU_revision" />
 		<property name="index" value="6" />
@@ -127,7 +127,7 @@
 			<map>
 				<entry key="tef_ulr">
 					<list>
-						<value>4</value>
+						<value>5</value>
 					</list>
 				</entry>
 			</map>
@@ -142,7 +142,7 @@
 	</bean>
 
 
-	<!-- L'administrateur verra les workflows à l'état 1, 3, 5, 7 et 9 décrit comme "ensemble des fiches" -->
+	<!-- L'administrateur verra les workflows à l'état 1, 2, 3, 4, 5, décrit comme "ensemble des fiches" -->
 	<bean class="org.orioai.workflow.beans.RoleStepCategory">
 		<property name="id"	value="theses_TEFULR_all" />
 		<property name="index" value="7" />
@@ -154,6 +154,7 @@
 						<value>2</value>
 						<value>3</value>
 						<value>4</value>
+						<value>5</value>
 					</list>
 				</entry>
 			</map>
