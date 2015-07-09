@@ -63,7 +63,7 @@
 		</property>
 		<property name="roleMaskList">
 			<list>
-				<value>TEFULR_AUTHENTICATED</value>
+				<value>TEFULR_BU</value>
 			</list>
 		</property>
 		<property name="description" value="mes fiches en cours de saisie BU"></property>
