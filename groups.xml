@@ -3,30 +3,39 @@
 
 
 <beans>
+
 	<bean name="oriGroupConfigGeneral_TEFULR" class="org.orioai.workflow.services.acls.OriGroupConfig">
+
 		<property name="groupsMap">
+			
 			<description>
 				groupsMap defines a Map where
 				* keys are groups names
 				* values are ldap, virtual or shibboleth groups used
 			</description>
+			
 			<map>
+				<entry key="TEF-ULR_ALL">
+					<value><![CDATA[ldap:alias_ori-oai]]></value>
+				</entry>
 				<entry key="TEF-ULR_DREDE">
 					<value><![CDATA[ldap:ori-oai_drede]]></value>
 				</entry>
-
-				<entry key="TEF-ULR_admins">
-					<value><![CDATA[ldap:ori-oai_admins]]></value>
-				</entry>
-
 				<entry key="TEF-ULR_BU">
 					<value><![CDATA[ldap:ori-oai_bu]]></value>
 				</entry>
 
-				<entry key="TEF-ULR_Validateur">
+				<entry key="TEF-ULR_VALIDATOR">
 					<value><![CDATA[ldap:ori-oai-validateur]]></value>
 				</entry>
+
+				<entry key="TEF-ULR_ADMINISTRATOR">
+					<value><![CDATA[ldap:ori-oai_admins]]></value>
+				</entry>
+
 			</map>
+		
 		</property>
+
 	</bean>
 </beans>
