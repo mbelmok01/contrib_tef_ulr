@@ -59,7 +59,6 @@
 	<!-- Le membre de la DREDE peut signagler une fiche a la BU -->
 	<!-- une fois que cette action est faite, on donne les droits d'edition a la BU -->
 	<steps>
-
 		<step id="1" name="tef_ulr.enCoursSaisiDREDE">
 			<actions>
 				<action id="1" name="tef_ulr.SignalerBU">
@@ -87,7 +86,7 @@
 						<function type="spring">
 							<arg name="bean.name">addPermission</arg>
 							<arg name="mask">TEF_WRITE USE_GLOBAL_TEFULR_FORM</arg>
-							<arg name="recipient">TEFULR_AUTHENTICATED</arg>
+							<arg name="recipient">TEFULR_BU</arg>
 						</function>
 						<function type="spring">
 							<arg name="bean.name">xslTransform</arg>
