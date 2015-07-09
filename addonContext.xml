@@ -1,25 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	>
 
 	<import resource="default-permissions-roles.xml"/>
-	
-	<import resource="groups.xml"/>	
+
+	<import resource="groups.xml"/>
 
 	<!-- spring-metadata-type -->
 	<bean class="org.orioai.workflow.beans.MetadataType">
-		<property name="metadataTypeId" value="tef_ulr"/> 
-		<property name="title" value="Thèses ULR"/> 
-		<property name="workflowName" value="tef_ulr"/> 
+		<property name="metadataTypeId" value="tef_ulr"/>
+		<property name="title" value="Thèses ULR 0.2"/>
+		<property name="workflowName" value="tef_ulr"/>
 		<property name="workflowInitialAction" value="100"/>
-		<property name="schemaNamespace" value="http://www.abes.fr/abes/documents/tef"/> 
-		<property name="xslFile" value="properties/workflows/contrib_tef_ulr/xsl/displayTEFResults.xsl"/> 
+		<property name="schemaNamespace" value="http://www.abes.fr/abes/documents/tef"/>
+		<property name="xslFile" value="properties/workflows/contrib_tef_ulr/xsl/displayTEFResults.xsl"/>
 		<property name="defaultXmlFile" value="properties/workflows/contrib_tef_ulr/xml/tef-simple-blank.xml"/>
 		<property name="xpathTitle" value="//mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='tef_desc_these']/mets:xmlData/tef:thesisRecord/dc:title" />
-		<property name="description" value="Une thèse (référencée directement par un modérateur)"/> 
+		<property name="description" value="Une thèse (référencée directement par un modérateur)"/>
 		<property name="forms">
 			<list>
 				<ref bean="tef_ulr-form"/>
@@ -29,24 +28,27 @@
 		<property name="templateForm" ref="tef_ulr-form"/>
 		<property name="deletePermissionMask" value="TEFULR_DELETE"/>
 	</bean>
-	
+
 	<bean class="org.orioai.workflow.beans.Form" id="tef_ulr-form">
-		<property name="title" value="Editer"/> 
+		<property name="title" value="Modifier la fiche TEF"/>
 		<property name="permissionMask" value="USE_GLOBAL_TEFULR_FORM"/>
 		<property name="url" value="${mdeditor.url}/fr/ori-md-editor/[TEF_FORMAT]-ulr/edit"/>
 	</bean>
+
 
 	<!-- namespaces -->
 	<bean id="mets" class="org.orioai.workflow.utils.XmlNamespace">
 		<property name="namespace" value="http://www.loc.gov/METS/"/>
 	</bean>
-	
+
 	<bean id="tef" class="org.orioai.workflow.utils.XmlNamespace">
 		<property name="namespace" value="http://www.abes.fr/abes/documents/tef"/>
 	</bean>
-	
+
+
 	<!-- workflow -->
-	<bean id="tefUlrWorkflowFactory" class="com.opensymphony.workflow.spi.hibernate.SpringWorkflowFactory" init-method="init">
+	<bean id="tefUlrWorkflowFactory"
+		class="com.opensymphony.workflow.spi.hibernate.SpringWorkflowFactory" init-method="init">
 		<property name="resource">
 			<value>properties/workflows/contrib_tef_ulr/workflows.xml</value>
 		</property>
