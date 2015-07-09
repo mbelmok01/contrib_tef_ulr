@@ -2,9 +2,6 @@
 <!DOCTYPE workflow PUBLIC "-//OpenSymphony Group//DTD OSWorkflow 2.6//EN" "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
 <workflow>
 	
-
-
-
 	<!-- Un membre de la DREDE commence le referencement : donc on lui donne les droits de creer/supprimer/etiter une fiche -->
 	<initial-actions>
 		<action id="100" name="Start Workflow">
@@ -12,7 +9,8 @@
 				<conditions type="AND">
 					<condition type="spring">
 						<arg name="bean.name">hasRole</arg>
-						<arg name="mask">TEFULR_DREDE</arg>
+						<arg name="mask">TEFULR_AUTHENTICATED</arg>
+						<!-- no recipient -> current user -->
 					</condition>
 				</conditions>
 			</restrict-to>
@@ -20,11 +18,20 @@
 				<unconditional-result old-status="Finished" status="Underway" step="1" />
 			</results>
 			<post-functions>
+
+				<!-- test test test test test -->
+				<function type="spring">
+					<arg name="bean.name">addRole</arg>
+					<arg name="mask">TEFULR_DREDE</arg>
+					<!-- no recipient -> current user -->
+				</function>
+
 				<function type="spring">
 					<arg name="bean.name">addPermission</arg>
-					<arg name="mask">TEFULR_CREATE TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
+					<arg name="mask">TEFULR_WRITE TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
 					<arg name="recipient">TEFULR_DREDE</arg>
 				</function>
+
 				<function type="spring">
 					<arg name="bean.name">setInstanceIdentity</arg>
 					<arg name="xpathMetadataIdentity">/mets:mets/mets:metsHdr/@ID</arg>
@@ -60,35 +67,36 @@
 
 	<!-- Le membre de la DREDE peut signagler une fiche a la BU -->
 	<!-- une fois que cette action est faite, on donne les droits d'edition a la BU -->
-	<steps>	
+	<steps>
+
 		<step id="1" name="tef_ulr.enCoursSaisiDREDE">
 			<actions>
-				<action id="2" name="tef_ulr.SignalerBU">
+				<action id="1" name="tef_ulr.SignalerBU">
 					<restrict-to>
 						<conditions type="AND">
 							<condition type="spring">
 								<arg name="bean.name">hasRole</arg>
-								<arg name="mask">TEFULR_DREDE</arg>			
+								<arg name="mask">TEFULR_DREDE</arg>
 							</condition>
-							<condition type="spring">
+							<!-- <condition type="spring">
 								<arg name="bean.name">verifySchematron</arg>
 								<arg name="schematronFile">properties/workflows/contrib_tef_ulr/sch/tef-drede-i18n.sch</arg>
-							</condition>
+							</condition> -->
 						</conditions>
 					</restrict-to>
 					<results>
-						<unconditional-result status="Underway" old-status="Finished" step="3" />
+						<unconditional-result status="Underway" old-status="Finished" step="2" />
 					</results>
 					<post-functions>
 						<function type="spring">
 							<arg name="bean.name">deletePermission</arg>
-							<arg name="mask">TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
+							<arg name="mask">TEFULR_WRITE TEFULR_DELETE USE_GLOBAL_TEFULR_FORM</arg>
 							<arg name="recipient">TEFULR_DREDE</arg>
 						</function>
 						<function type="spring">
 							<arg name="bean.name">addPermission</arg>
-							<arg name="mask">USE_GLOBAL_TEFULR_FORM</arg>
-							<arg name="recipient">TEFULR_BU</arg>
+							<arg name="mask">TEF_WRITE USE_GLOBAL_TEFULR_FORM</arg>
+							<arg name="recipient">TEFULR_AUTHENTICATED</arg>
 						</function>
 						<function type="spring">
 							<arg name="bean.name">xslTransform</arg>
@@ -108,7 +116,7 @@
 								{0} vient de placer renseigner une fiche de métadonnées.
 
 								---------------------------------------------
-								Voici ses observations.
+								Voici ses observations :
 								{2}
 								
 								-------------------------------------------------
@@ -125,9 +133,9 @@
 		<!-- Un membre de la BU peut editer une fiche -->
 		<!-- il peut signaler la fiche au validateur -->
 	
-		<step id="3" name="tef_ulr.enCoursSaisiBU">
+		<step id="2" name="tef_ulr.enCoursSaisiBU">
 			<actions>
-				<action id="4" name="tef_ulr.SignalerValidateur">
+				<action id="2" name="tef_ulr.SignalerValidateur">
 					<restrict-to>
 						<conditions type="AND">
 							<condition type="spring">
@@ -141,7 +149,7 @@
 						</conditions>
 					</restrict-to>
 					<results>
-						<unconditional-result old-status="Finished" status="Underway" step="5" />
+						<unconditional-result old-status="Finished" status="Underway" step="3" />
 					</results>
 					<post-functions>
 						<function type="spring">
@@ -163,7 +171,7 @@
 								{0} vient de vous soumettre une fiche de métadonnées afin que vous la validiez : {1}
 
 								---------------------------------------------
-								Voici ses observations.
+								Voici ses observations :
 								{2}
 								
 								-------------------------------------------------
@@ -184,9 +192,9 @@
 		<!-- le membre validateur peut voir la fiche -->
 		<!-- il a la possibilite de valider une fiche => referecement + indexation -->
 		<!-- il a la possibilite de rejeter une fiche => on repart a l'etape 1 -->
-		<step id="5" name="tef_ulr.enCoursValidation">
+		<step id="3" name="tef_ulr.enCoursValidation">
 			<actions>
-				<action id="6" name="tef_ulr.Valider">
+				<action id="3" name="tef_ulr.Valider">
 					<restrict-to>
 						<conditions type="AND">
 							<condition type="spring">
@@ -200,7 +208,7 @@
 						</conditions>
 					</restrict-to>
 					<results>
-						<unconditional-result status="Underway" old-status="Finished" step="7" />
+						<unconditional-result status="Underway" old-status="Finished" step="4" />
 					</results>
 					<post-functions>
 						<function type="spring">
@@ -253,7 +261,7 @@
 				</action>
 				
 
-				<action id="11" name="tef_ulr.Reject">
+				<action id="4" name="tef_ulr.Reject">
 					<restrict-to>
 						<conditions type="AND">
 							<condition type="spring">
@@ -293,7 +301,8 @@
 								{0} a rejeté la thèse suivante : {1}
 
 								---------------------------------------------
-								Voici ses observations {2}
+								Voici ses observations :
+								{2}
 
 
 								]]>
@@ -309,9 +318,9 @@
 
 		<!-- si une fiche est validee, il est possible de la desindexer -->
 		<!-- on redonne le droit d'edition aux membres de la BU et de la DREDE -->
-		<step id="7" name="tef_ulr.Validee">
+		<step id="4" name="tef_ulr.Validee">
 			<actions>
-				<action id="8" name="tef_ulr.Desindexer">
+				<action id="5" name="tef_ulr.Desindexer">
 					<restrict-to>
 						<conditions type="AND">
 							<condition type="spring">
@@ -325,7 +334,7 @@
 						</conditions>
 					</restrict-to>
 					<results>
-						<unconditional-result status="Underway" old-status="Finished" step="9" />
+						<unconditional-result status="Underway" old-status="Finished" step="5" />
 					</results>
 					<post-functions>
 						<function type="spring">
@@ -362,9 +371,9 @@
 
 		<!-- si une fiche a ete desindexee (entre temps corrigee) il faut de nouveau la reindexer et supprimer les droits d'edition -->
 
-		<step id="9" name="tef_ulr.Desindexee">
+		<step id="5" name="tef_ulr.Desindexee">
 			<actions>
-				<action id="10" name="tef_ulr.Reindexer">
+				<action id="6" name="tef_ulr.Reindexer">
 					<restrict-to>
 						<conditions type="AND">
 							<condition type="spring">
@@ -378,7 +387,7 @@
 						</conditions>
 					</restrict-to>
 					<results>
-						<unconditional-result status="Underway" old-status="Finished" step="7" />
+						<unconditional-result status="Underway" old-status="Finished" step="1" />
 					</results>
 					<post-functions>
 						<function type="spring">
