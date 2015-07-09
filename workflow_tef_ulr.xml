@@ -10,7 +10,6 @@
 					<condition type="spring">
 						<arg name="bean.name">hasRole</arg>
 						<arg name="mask">TEFULR_DREDE</arg>
-						<!-- no recipient -> current user -->
 					</condition>
 				</conditions>
 			</restrict-to>
