@@ -15,9 +15,7 @@
 			</description>
 			
 			<map>
-				<entry key="TEF-ULR_ALL">
-					<value><![CDATA[ldap:alias_ori-oai]]></value>
-				</entry>
+
 				<entry key="TEF-ULR_DREDE">
 					<value><![CDATA[ldap:ori-oai_drede]]></value>
 				</entry>
