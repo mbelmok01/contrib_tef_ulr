@@ -19,12 +19,7 @@
 
 
 
-	<bean class="org.orioai.workflow.beans.acls.OriAclRole">
-		<property name="objMask" value="TEFULR_AUTHENTICATED"/>
-		<property name="recipient" value="TEF-ULR_ALL"/>
-	</bean>
-
-
+	
 
 	<!-- default affected roles  -->
 	<bean class="org.orioai.workflow.beans.acls.OriAclRole">
